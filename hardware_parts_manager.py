@@ -1,8 +1,13 @@
 from tkinter import *
+from db import Database
+
+db = Database("store.db")
 
 
 def populate_list():
-    print("Populate")
+    parts_list.delete(0, END)
+    for row in db.fetch():
+        parts_list.insert(END, row)
 
 
 def add_item():
@@ -25,6 +30,9 @@ def clear_text():
 app = Tk()
 app.title("Hardware Manager")
 app.geometry("700x350")
+
+# ensure a consistent GUI size
+app.grid_propagate(False)
 
 # Part
 part_text = StringVar()
@@ -55,10 +63,11 @@ parts_list = Listbox(app, height=8, width=50, border=0)
 parts_list.grid(row=3, column=0, columnspan=3, rowspan=6, pady=20, padx=20)
 # Create scrollbar
 scrollbar = Scrollbar(app)
-scrollbar.grid(row=3, column=3)
+scrollbar.grid(row=3, column=3, rowspan=6, sticky=N+S)
 # Set scroll to listbox
-parts_list.configure(yscrollcommand=scrollbar.set)
 scrollbar.configure(command=parts_list.yview)
+parts_list.configure(yscrollcommand=scrollbar.set)
+
 
 # Buttons
 add_btn = Button(app, text="Add Part", width=12, command=add_item)
@@ -73,6 +82,9 @@ update_btn.grid(row=2, column=2)
 clear_btn = Button(app, text="Clear Input", width=12, command=clear_text)
 clear_btn.grid(row=2, column=3)
 
+# Populate data
+populate_list()
+# populate_list()
 
 # Start program
 app.mainloop()
