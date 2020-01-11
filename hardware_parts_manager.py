@@ -23,8 +23,24 @@ def add_item():
     populate_list()
 
 
+def select_item(event):
+    global selected_item
+    index = parts_list.curselection()[0]
+    selected_item = parts_list.get(index)
+
+    part_entry.delete(0, END)
+    part_entry.insert(END, selected_item[1])
+    customer_entry.delete(0, END)
+    customer_entry.insert(END, selected_item[2])
+    retailer_entry.delete(0, END)
+    retailer_entry.insert(END, selected_item[3])
+    price_entry.delete(0, END)
+    price_entry.insert(END, selected_item[4])
+
+
 def remove_item():
-    print("remove")
+    db.remove(selected_item[0])
+    populate_list()
 
 
 def update_item():
@@ -68,15 +84,16 @@ price_label.grid(row=1, column=2, sticky=W)
 price_entry = Entry(app, textvariable=price_text)
 price_entry.grid(row=1, column=3)
 # Part List (ListBox)
-parts_list = Listbox(app, height=8, width=50, border=0)
-parts_list.grid(row=3, column=0, columnspan=3, rowspan=6, pady=20, padx=20)
+parts_list = Listbox(app, height=8, width=100, border=0)
+parts_list.grid(row=3, column=0, columnspan=4, rowspan=6, pady=20, padx=20)
 # Create scrollbar
 scrollbar = Scrollbar(app)
-scrollbar.grid(row=3, column=3, rowspan=6, sticky=N+S)
+scrollbar.grid(row=3, column=4, rowspan=6, sticky=N+S)
 # Set scroll to listbox
 scrollbar.configure(command=parts_list.yview)
 parts_list.configure(yscrollcommand=scrollbar.set)
-
+# Bind select
+parts_list.bind("<<ListboxSelect>>", select_item)
 
 # Buttons
 add_btn = Button(app, text="Add Part", width=12, command=add_item)
