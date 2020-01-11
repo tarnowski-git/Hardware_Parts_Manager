@@ -1,6 +1,6 @@
-__pycache__
-.vscode
+__pycache__/
+.vscode/
 # from pyinstaller
-build
-dist
-hardware_parts_manager.spec
+build/
+dist/
+*.spec
