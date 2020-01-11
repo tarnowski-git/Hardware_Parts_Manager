@@ -155,9 +155,9 @@ class MainApplication(tk.Frame):
         self.parts_list.select_clear(0, tk.END)
 
 
-root = tk.Tk()
-# Create window object
-app = MainApplication(master=root)
 
 # Start program
-app.mainloop()
+if __name__ == '__main__':
+    root = tk.Tk()
+    app = MainApplication(master=root)
+    app.mainloop()
