@@ -12,15 +12,20 @@ class MainApplication(tk.Frame):
     def __init__(self, master):
         super().__init__(master)
         self.master = master
-        self.selected_item = 0  # Init selected item var
         self.configure_gui()
         self.create_widgets()
         self.setup_layout()
+        self.bind_widgets()
+        # Init selected item var
+        self.selected_item = 0
+        # Populate initial list
+        self.populate_list()
 
     def configure_gui(self):
         """Setting general configurations of the application"""
         self.master.title("Hardware Manager")
         self.master.geometry("700x350")
+        self.master.resizable(0, 0)
 
     def create_widgets(self):
         """Creating the widgets of the application"""
@@ -78,81 +83,76 @@ class MainApplication(tk.Frame):
         self.clear_btn.grid(row=2, column=3)
 
     def bind_widgets(self):
+        """Binding widgets when it needed"""
         # Set scroll to listbox
         self.scrollbar.configure(command=self.parts_list.yview)
         self.parts_list.configure(yscrollcommand=self.scrollbar.set)
         # Bind select
         self.parts_list.bind("<<ListboxSelect>>", self.select_item)
 
+    def populate_list(self):
+        """Delete items before update. So when you keep pressing
+        it doesnt keep getting (pretending by calling this twice)"""
+        self.parts_list.delete(0, tk.END)
+        # Loop through records
+        for row in db.fetch():
+            self.parts_list.insert(tk.END, row)
+
+    def select_item(self, event):
+        """Runs when some item in the Listbox is selected"""
+        try:
+            # Get index
+            index = self.parts_list.curselection()[0]
+            # Get selected item
+            self.selected_item = self.parts_list.get(index)
+            # Add text to entries
+            self.part_entry.delete(0, tk.END)
+            self.part_entry.insert(tk.END, self.selected_item[1])
+            self.customer_entry.delete(0, tk.END)
+            self.customer_entry.insert(tk.END, self.selected_item[2])
+            self.retailer_entry.delete(0, tk.END)
+            self.retailer_entry.insert(tk.END, self.selected_item[3])
+            self.price_entry.delete(0, tk.END)
+            self.price_entry.insert(tk.END, self.selected_item[4])
+        except IndexError:
+            pass
+
     def add_item(self):
-        pass
+        """Add new item"""
+        if self.part_text.get() == "" or self.customer_text.get() == "" or self.retailer_text.get() == "" or self.price_text.get() == "":
+            messagebox.showerror(
+                "Required Fields", "Please include all fields")
+            return None
+        # Insert into DB
+        db.insert(self.part_text.get(), self.customer_text.get(),
+                  self.retailer_text.get(), self.price_text.get())
+        # Clear list
+        self.parts_list.delete(0, tk.END)
+        # Insert into list
+        self.parts_list.insert(tk.END, (self.part_text.get(), self.customer_text.get(),
+                                        self.retailer_text.get(), self.price_text.get()))
+        self.clear_text()
+        self.populate_list()
 
     def remove_item(self):
-        pass
+        """Remove selected item"""
+        db.remove(self.selected_item[0])
+        self.clear_text()
+        self.populate_list()
 
     def update_item(self):
-        pass
+        """Update selected item"""
+        db.update(self.selected_item[0], self.part_text.get(), self.customer_text.get(),
+                  self.retailer_text.get(), self.price_text.get())
+        self.populate_list()
 
     def clear_text(self):
-        pass
-
-    def select_item(self):
-        pass
-
-
-# def populate_list():
-#     parts_list.delete(0, END)
-#     for row in db.fetch():
-#         parts_list.insert(END, row)
-# def add_item():
-#     if part_text.get() == "" or customer_text.get() == "" or retailer_text.get() == "" or price_text.get() == "":
-#         messagebox.showerror("Required Fields", "Please include all fields")
-#         return None
-#     db.insert(part_text.get(), customer_text.get(),
-#               retailer_text.get(), price_text.get())
-#     parts_list.delete(0, END)
-#     parts_list.insert(END, (part_text.get(), customer_text.get(),
-#                             retailer_text.get(), price_text.get()))
-#     clear_text()
-#     populate_list()
-# def select_item(event):
-#     try:
-#         global selected_item
-#         index = parts_list.curselection()[0]
-#         selected_item = parts_list.get(index)
-#         part_entry.delete(0, END)
-#         part_entry.insert(END, selected_item[1])
-#         customer_entry.delete(0, END)
-#         customer_entry.insert(END, selected_item[2])
-#         retailer_entry.delete(0, END)
-#         retailer_entry.insert(END, selected_item[3])
-#         price_entry.delete(0, END)
-#         price_entry.insert(END, selected_item[4])
-#     except IndexError:
-#         pass
-# def remove_item():
-#     db.remove(selected_item[0])
-#     clear_text()
-#     populate_list()
-# def update_item():
-#     db.update(selected_item[0], part_text.get(), customer_text.get(),
-#               retailer_text.get(), price_text.get())
-#     populate_list()
-# def clear_text():
-#     part_entry.delete(0, END)
-#     customer_entry.delete(0, END)
-#     retailer_entry.delete(0, END)
-#     price_entry.delete(0, END)
-#     parts_list.select_clear(0, END)
-
-
-# ensure a consistent GUI size
-# app.grid_propagate(False)
-
-
-# Populate data
-# populate_list()
-# populate_list()
+        """Clear all text fields"""
+        self.part_entry.delete(0, tk.END)
+        self.customer_entry.delete(0, tk.END)
+        self.retailer_entry.delete(0, tk.END)
+        self.price_entry.delete(0, tk.END)
+        self.parts_list.select_clear(0, tk.END)
 
 
 root = tk.Tk()
