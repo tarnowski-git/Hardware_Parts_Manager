@@ -4,7 +4,7 @@ Desktop CRUD GUI application to manage customer computer parts with Python, the 
 
 ## Demo
 
-<!-- ![game](https://user-images.githubusercontent.com/34337622/72091944-9f66da80-3311-11ea-81d6-977131cc7991.gif) -->
+![app](https://user-images.githubusercontent.com/34337622/72211392-efd56800-34ca-11ea-9a0f-dae1d0306fd0.gif)
 
 ## Technologies
 
