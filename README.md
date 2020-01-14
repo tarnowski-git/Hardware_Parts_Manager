@@ -35,15 +35,15 @@ $ pipenv shell
 # Install dependencies
 $ pipenv install
 
-# Run script
-$ python hardware_parts_manager.py
+# Run script into local environment
+$ pipenv run python hardware_parts_manager.py
 ```
 
 -   Compile with Pyinstaller to exectutable file:
 
 ```
 # Windows
-pyinstaller --onefile --windowed part_manager.py
+pyinstaller --onefile --windowed hardware_parts_manager.py
 ```
 
 ## Sources
@@ -52,4 +52,4 @@ This application is based on [Traversy Media](https://www.youtube.com/channel/UC
 
 ## License
 
-This project is licensed under the terms of the [**MIT**](https://github.com/tarnowski-git/rock_paper_scissors_game/blob/master/LICENSE) license.
+This project is licensed under the terms of the [**MIT**](https://github.com/tarnowski-git/Hardware_Parts_Manager/blob/master/LICENSE) license.
